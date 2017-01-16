@@ -301,6 +301,8 @@ public class AVLTree<E extends Comparable<E>> implements ISortedSet<E> {
         tree.add(4);
         tree.add(12);
         System.out.println(tree.inorderTraverse());
+        System.out.println(tree.first());
+        System.out.println(tree.last());
         tree.remove(6);
         tree.remove(1);
         System.out.println(tree.inorderTraverse());
