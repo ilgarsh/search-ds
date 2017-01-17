@@ -27,7 +27,7 @@ public class ChainHashTable<E extends Comparable<E>> implements ISet<E> {
     }
 
     private final int INITIAL_CAPACITY = 8;
-//    private final float LOAD_FACTOR = 0.5f;
+    private final float LOAD_FACTOR = 0.5f;
 
     private Comparator<E> comparator;
     private Object[] table;
@@ -132,7 +132,6 @@ public class ChainHashTable<E extends Comparable<E>> implements ISet<E> {
                 Node curr = node;
                 while (curr != null) {
                     Node next = curr.next;
-                    //FIXME: insert value in head (all unique)
                     add(curr.value);
                     curr.next = null;
                     curr.value = null;
