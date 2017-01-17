@@ -161,7 +161,7 @@ public class ChainHashTable<E extends Comparable<E>> implements ISet<E> {
             table.remove(i);
         }
         table.print();
-        *////
+        */
         ChainHashTable<String> ts = new ChainHashTable<>();
         ts.add("abc");
         ts.add("abc");

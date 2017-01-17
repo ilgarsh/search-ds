@@ -2,7 +2,6 @@ package ru.mail.polis;
 
 import java.util.Comparator;
 
-//TODO: write code here
 public class OpenHashTable <E extends Comparable<E>> implements ISet<E> {
 
     private int size;
@@ -29,11 +28,11 @@ public class OpenHashTable <E extends Comparable<E>> implements ISet<E> {
         return 5 - Math.abs(key.hashCode()) % 5;
     }
 
-    public void displayTable() { //TODO
+    public void displayTable() {
         System.out.println("Table: ");
-        for (int j=0; j<size; j++) {
+        for (int j=0; j<hashArray.length; j++) {
             if (hashArray[j] != null) {
-                System.out.println(hashArray[j].getKey()+" ");
+                System.out.println(hashArray[j]+" ");
             } else {
                 System.out.println("** ");
             }
@@ -43,83 +42,91 @@ public class OpenHashTable <E extends Comparable<E>> implements ISet<E> {
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size==0;
     }
 
     @Override
     public boolean contains(E value) {
+        if (value==null) {
+            throw new NullPointerException("argument is null");
+        }
+
+        int hashVal = hashFunc1(value);
+        int stepSize = hashFunc2(value);
+        while (hashArray[hashVal]!=null) {
+            if (hashArray[hashVal]==value) {
+                return true;
+            }
+            hashVal += stepSize;
+            hashVal %= hashArray.length;
+        }
         return false;
     }
 
     @Override
     public boolean add(E value) {
-        return false;
+        if (contains(value)) {
+            return false;
+        }
+
+        int hashVal = hashFunc1(value);
+        int stepSize = hashFunc2(value);
+        while (hashArray[hashVal]!=null) {
+            hashVal += stepSize;
+            hashVal %= hashArray.length;
+        }
+        hashArray[hashVal] = value;
+        size++;
+        resize();
+        return true;
+    }
+
+    private void resize() {
+        if (size * 2 < hashArray.length) {
+            return;
+        }
+        //TODO: write code for resize array
+    }
+
+    private void rehashing() { //TODO: write rehashing
+
     }
 
     @Override
     public boolean remove(E value) {
-        return false;
+        if (!contains(value)) {
+            return false;
+        }
+        int hashVal = hashFunc1(value);
+        int stepSize = hashFunc2(value);
+        while (hashArray[hashVal]!=null) {
+            if (hashArray[hashVal]==value) {
+                Object temp = hashArray[hashVal];
+                hashArray[hashVal] = null;
+                break;
+            }
+            hashVal+= stepSize;
+            hashVal %= hashArray.length;
+        }
+        size--;
+        return true;
     }
 
     //--------------------------------------------------------------------
 
-
-    public void insert(int key, DataItem item) {
-        int hashVal = hashFunc1(key);
-        int stepSize = hashFunc2(key);
-
-        while (hashArray[hashVal]!=null && hashArray[hashVal].getKey()!=-1) {
-            hashVal += stepSize;
-            hashVal %= arraySize;
-        }
-
-        hashArray[hashVal] = item;
-    }
-
-    public DataItem delete(int key) {
-        int hashVal = hashFunc1(key);
-        int stepSize = hashFunc2(key);
-
-        while (hashArray[hashVal]!=null) {
-            if (hashArray[hashVal].getKey()==key) {
-                DataItem temp = hashArray[hashVal];
-                hashArray[hashVal] = nonItem;
-                return temp;
-            }
-            hashVal+= stepSize;
-            hashVal %= arraySize;
-        }
-        return null;
-    }
-
-    public DataItem find(int key) {
-        int hashVal = hashFunc1(key);
-        int stepSize = hashFunc2(key);
-
-        while (hashArray[hashVal]!=null) {
-            if (hashArray[hashVal].getKey()==key) {
-                return hashArray[hashVal];
-            }
-            hashVal += stepSize;
-            hashVal %= arraySize;
-        }
-        return null;
-    }
-
     public static void main(String[] args) {
-        DataItem item1 = new DataItem(1000);
-        DataItem item2 = new DataItem(234);
-        DataItem item3 = new DataItem(10444);
-        OpenHashTable table = new OpenHashTable(10);
-        table.insert(1, item1);
-        table.insert(8, item2);
-        table.insert(11, item3);
-        System.out.println(table.find(11));
+        OpenHashTable<String> table = new OpenHashTable<>();
+        table.add("abc");
+        table.add("def");
+        table.add("ggg");
+        table.add("abc");
+        table.remove("ggg");
+        System.out.println(table.contains("abc"));
         table.displayTable();
     }
 }
