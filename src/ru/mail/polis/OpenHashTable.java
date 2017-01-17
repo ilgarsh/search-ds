@@ -91,10 +91,22 @@ public class OpenHashTable <E extends Comparable<E>> implements ISet<E> {
             return;
         }
         //TODO: write code for resize array
-    }
-
-    private void rehashing() { //TODO: write rehashing
-
+        Object[] temp = hashArray;
+        this.hashArray = new Object[hashArray.length*2];
+        for (int i=0; i<size; i++) {
+            int j=0;
+            while(temp[j]==null) {
+                j++;
+            }
+            int hashVal = hashFunc1((E)temp[j]);
+            int stepSize = hashFunc2((E)temp[j]);
+            while (hashArray[hashVal]!=null) {
+                hashVal += stepSize;
+                hashVal %= hashArray.length;
+            }
+            hashArray[hashVal] = temp[j];
+            temp[j]=null;
+        }
     }
 
     @Override
@@ -121,12 +133,18 @@ public class OpenHashTable <E extends Comparable<E>> implements ISet<E> {
 
     public static void main(String[] args) {
         OpenHashTable<String> table = new OpenHashTable<>();
-        table.add("abc");
-        table.add("def");
-        table.add("ggg");
-        table.add("abc");
-        table.remove("ggg");
-        System.out.println(table.contains("abc"));
+        table.add("a");
+        table.add("b");
+        table.add("c");
+        table.add("d");
+        table.add("e");
+        table.add("f");
+        table.add("g");
+        table.add("11");
+        table.add("22");
+        table.remove("c");
+        table.remove("a");
+        table.remove("f");
         table.displayTable();
     }
 }
